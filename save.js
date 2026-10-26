@@ -1,0 +1,6 @@
+const KEY='block-burasuto-save-v1';
+export const defaults=()=>({version:1,points:0,best:0,plays:0,total:0,unlockedStage:1,cleared:[],owned:['0-0','1-0','2-0','3-0','4-0'],equipped:[0,0,0,0,0],playlist:['4-0'],shuffle:false,settings:{musicVolume:55,sfxVolume:65,effects:'medium',theme:'dark',vibrate:false},current:null});
+export function load(){try{const obj=JSON.parse(localStorage.getItem(KEY));if(obj&&obj.version===1&&Array.isArray(obj.owned)&&Array.isArray(obj.equipped)&&obj.settings&&Number.isFinite(obj.points))return {...defaults(),...obj,settings:{...defaults().settings,...obj.settings}};}catch{}return defaults();}
+export function save(data){try{localStorage.setItem(KEY,JSON.stringify(data));return true;}catch{return false;}}
+export function exportData(data){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='block-burasuto-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+export function validateImport(data){return data&&data.version===1&&Number.isSafeInteger(data.points)&&data.points>=0&&Array.isArray(data.owned)&&Array.isArray(data.equipped)&&Array.isArray(data.cleared)&&data.settings&&typeof data.settings==='object'&&Number.isSafeInteger(data.unlockedStage)&&data.unlockedStage>=1&&data.unlockedStage<=101;}
